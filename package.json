@@ -1,0 +1,21 @@
+{
+  "name": "gulpstudy",
+  "version": "1.0.0",
+  "description": "this is a gulp sample",
+  "main": "FileConfig.js",
+  "dependencies": {
+    "gulp": "^3.9.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "del": "^2.2.0",
+    "gulp-if": "^2.0.0",
+    "path": "^0.12.7",
+    "yargs": "^4.6.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "zhangqiusheng",
+  "license": "ISC"
+}
