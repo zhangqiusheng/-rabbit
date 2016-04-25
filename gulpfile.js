@@ -17,7 +17,7 @@ gulp.task('help', function () {
     //console.log('	gulp 	-m <module>		模块打包(默认:all)')
 });
 
-gulp.task('default', ['test'], function () {
+gulp.task('default', ['clean'], function () {
 
 
 });
@@ -85,6 +85,6 @@ function executeTask(key) {
     var modules = generator.getAllModules();
     var autoTask = new autoTasks();
     var callback = autoTask[key];
-    var taskExecutor = new taskExecutor(modules, option.evr, callback(module, option.evr));
-    taskExecutor.execute();
+    var executor = new taskExecutor(modules, option.evr, callback(module, option.evr));
+    executor.execute();
 }
