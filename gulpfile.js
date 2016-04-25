@@ -2,11 +2,11 @@ var gulp = require('gulp'),
     argv = require('yargs').argv,
     path = require('path'),
     setting = require('./settings.js'),
-    AutoTasks = require('./buildSrc/src/AutoTasks');
-var ModuleGenerator = require('./buildSrc/src/ModuleGenerator.js');
-var TaskExecutor = require('./buildSrc/src/TaskExceutor.js');
+    autoTasks = require('./buildSrc/src/AutoTasks');
+var moduleGenerator = require('./buildSrc/src/ModuleGenerator.js');
+var taskExecutor = require('./buildSrc/src/TaskExceutor.js');
 var srcModules = setting.modules;
-var generator = new ModuleGenerator(srcModules);
+var generator = new moduleGenerator(srcModules);
 
 gulp.task('help', function () {
     console.log('	gulp 	build			文件打包');
@@ -28,12 +28,11 @@ gulp.task('clean', function () {
     //     evr: argv.p || !argv.d
     // };
     // var modules = generator.getAllModules();
-    // var autoTask = new AutoTasks();
+    // var autoTask = new autoTasks();
     // var gClean = autoTask.clean;
-    // var taskExecutor = new TaskExecutor(modules, option.evr, gClean(module, option.evr));
+    // var taskExecutor = new taskExecutor(modules, option.evr, gClean(module, option.evr));
     // taskExecutor.execute();
-    var key = 'clean';
-    executeTask(key);
+    executeTask('clean');
 
 });
 
@@ -70,15 +69,13 @@ gulp.task('build', function () {
     // // var gulpTask = new AutoTask();
     // // var gBuild = gulpTask.build;
     //
-    // var taskExecutor = new TaskExecutor(modules, option.evr, callback);
+    // var taskExecutor = new taskExecutor(modules, option.evr, callback);
     // taskExecutor.execute();
-    var key = 'build';
-    executeTask(key);
+    executeTask('build');
 });
 
 gulp.task('test', function () {
-    var key = 'test';
-    executeTask(key);
+    executeTask('test');
 });
 
 function executeTask(key) {
@@ -86,8 +83,8 @@ function executeTask(key) {
         evr: argv.p || !argv.d
     };
     var modules = generator.getAllModules();
-    var autoTask = new AutoTasks();
+    var autoTask = new autoTasks();
     var callback = autoTask[key];
-    var taskExecutor = new TaskExecutor(modules, option.evr, callback(module, option.evr));
+    var taskExecutor = new taskExecutor(modules, option.evr, callback(module, option.evr));
     taskExecutor.execute();
 }

@@ -7,7 +7,7 @@ var gulp = require('gulp'),
 
 function AutoTasks() {
     var that = this;
-    var getDependencyModuleSrc =function getDependencyModuleSrc(module, isDevelop) {
+    var getDependencyModuleSrc = function getDependencyModuleSrc(module, isDevelop) {
         var sources = [];
         var moduleDeps = module.dependencies;
         var buildType = isDevelop ? module.develop : module.production;
@@ -23,7 +23,7 @@ function AutoTasks() {
     };
     that.clean = function () {
 
-        var tmp = function (module,isDevelop) {
+        var tmp = function (module, isDevelop) {
 
             var buildType = isDevelop ? module.production : module.develop;
             var cleanPath = path.join(module.name, buildType);
@@ -35,7 +35,7 @@ function AutoTasks() {
     };
     that.build = function () {
 
-        var tmp = function(module, isDevelop){
+        var tmp = function (module, isDevelop) {
 
             var sources = getDependencyModuleSrc(module, isDevelop);
             sources.push(module.src);
@@ -51,16 +51,16 @@ function AutoTasks() {
     };
     that.test = function () {
 
-        var tmp = function(module, isDevelop) {
+        var tmp = function (module, isDevelop) {
 
             var sources = getDependencyModuleSrc(module, isDevelop);
 
-            var files = sources.concat(module.src,module.test);
-             // console.log(files);
+            var files = sources.concat(module.src, module.test);
+            // console.log(files);
             Server.start({
                 configFile: 'karma.conf.js',
                 singleRun: isDevelop,
-                files:files
+                files: files
             }, done);
 
         };

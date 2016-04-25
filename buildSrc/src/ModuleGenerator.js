@@ -23,8 +23,8 @@ function ModuleGenerator(modules) {
     that.getAllModules = function () {
 
         var list = [];
-        if(null == that.modules || that.modules.length <= 0){
-            return ;
+        if (null == that.modules || that.modules.length <= 0) {
+            return;
         }
         for (var key in that.modules) {
             list.push(createModule(key));

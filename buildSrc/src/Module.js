@@ -1,7 +1,7 @@
 /**
  * Created by fang_ on 2016/4/24.
  */
-function Module(name, src, test, dest, dependencies){
+function Module(name, src, test, dest, dependencies) {
     var that = this;
     that.name = name;
     that.src = src;

@@ -2,11 +2,11 @@
  * Created by fang_ on 2016/4/24.
  */
 var expect = require('chai').expect;
-var ModuleGenerator = require('../src/ModuleGenerator.js');
+var moduleGenerator = require('../src/ModuleGenerator.js');
 var sourceConfig = require('../../settings.js');
 var TaskExecutor = require('../src/TaskExceutor.js');
 
-describe('TaskExecutor:get all the module that will be execute', function () {
+describe('taskExecutor:get all the module that will be execute', function () {
 
     var generator,
         modules,
@@ -25,7 +25,7 @@ describe('TaskExecutor:get all the module that will be execute', function () {
 
     beforeEach(function () {
 
-        generator = new ModuleGenerator(orignalModules);
+        generator = new moduleGenerator(orignalModules);
         modules = generator.getAllModules();
         taskExecutor = new TaskExecutor(modules, pod,callbackMock);
 
