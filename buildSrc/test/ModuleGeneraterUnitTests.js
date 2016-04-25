@@ -1,8 +1,8 @@
 var expect = require('chai').expect;
-var ModuleGenerator = require('../../src/module/ModuleGenerator.js');
-var sourceConfig = require('../../src/config/Config.js');
+var ModuleGenerator = require('../src/ModuleGenerator.js');
+var sourceConfig = require('../../settings.js');
 
-describe('ModuleGenerator:create module from config', function () {
+describe('ModuleGenerator:create module from settings', function () {
 
     var generator;
     var modules = sourceConfig.modules;
