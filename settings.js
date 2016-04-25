@@ -53,7 +53,7 @@ function Settings() {
             test: that.source.common.test,
             dest: 'commonTracker',
             name: 'commonTracker',
-            dependencies: ['common']
+            dependencies: []
         },
         tvd: {
             src: that.source.tvd.src,
