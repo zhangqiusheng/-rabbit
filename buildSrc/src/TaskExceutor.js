@@ -20,12 +20,15 @@ function TaskExecutor(modules, isDevelop, callback) {
                     if (hasExecuted.indexOf(tmpDepModules[j].name) != -1) {
                         break;
                     }
-
+                    console.log("begin callback: " + tmpDepModules[j].name);
                     that.callback(tmpDepModules[j], that.isDevelop);
+                    console.log("end callback: " + tmpDepModules[j].name);
                     hasExecuted.push(tmpDepModules[j].name);
                 }
             }
+            console.log("begin callback: " + tmpModule.name);
             that.callback(tmpModule, that.isDevelop);
+            console.log("end callback: " + tmpModule.name);
             hasExecuted.push(tmpModule.name);
         }
     };

@@ -4,14 +4,28 @@
   "description": "this is a gulp sample",
   "main": "FileConfig.js",
   "dependencies": {
-    "gulp": "^3.9.1"
+    "gulp": "^3.9.1",
+    "jslint": "^0.9.6"
   },
   "devDependencies": {
     "chai": "^3.5.0",
     "del": "^2.2.0",
     "gulp-if": "^2.0.0",
+    "gulp-jshint": "^1.10.0",
+    "gulp-load-plugins": "^0.10.0",
+    "gulp-uglify": "^1.2.0",
+    "jasmine-core": "^2.4.1",
+    "jslint": "^0.9.6",
+    "karma": "~0.12.31",
+    "karma-chrome-launcher": "~0.1.8",
+    "karma-coverage": "~0.3.1",
+    "karma-firefox-launcher": "~0.1.4",
+    "karma-ie-launcher": "^0.1.5",
+    "karma-jasmine": "~0.3.5 ",
+    "karma-junit-reporter": "~0.2.2",
     "mocha": "^2.4.5",
     "path": "^0.12.7",
+    "uglify-js": "^2.6.2",
     "yargs": "^4.6.0"
   },
   "scripts": {

@@ -17,7 +17,7 @@ gulp.task('help', function () {
     //console.log('	gulp 	-m <module>		模块打包(默认:all)')
 });
 
-gulp.task('default', ['clean'], function () {
+gulp.task('default', ['build'], function () {
 
 
 });
@@ -74,17 +74,22 @@ gulp.task('build', function () {
     executeTask('build');
 });
 
-gulp.task('test', function () {
-    executeTask('test');
+gulp.task('test', function (done) {
+    executeTask('test',done);
 });
 
-function executeTask(key) {
+function executeTask(key,done) {
     var option = {
         evr: argv.p || !argv.d
     };
     var modules = generator.getAllModules();
     var autoTask = new autoTasks();
     var callback = autoTask[key];
-    var executor = new taskExecutor(modules, option.evr, callback(module, option.evr));
+    if (key === 'test') {
+        var executor = new taskExecutor(modules, option.evr, callback(module, option.evr, done));
+    } else {
+        var executor = new taskExecutor(modules, option.evr, callback(module, option.evr));
+    }
+
     executor.execute();
 }
