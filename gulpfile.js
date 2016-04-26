@@ -86,7 +86,6 @@ var gulpTasks = {
     },
 
     gbuild: function () {
-
         var getDependencyModuleSrc = function getDependencyModuleSrc(module, isPod) {
             var sources = [];
             var moduleDeps = module.dependencies;
@@ -106,11 +105,13 @@ var gulpTasks = {
         var buildType = isPod ? module.production : module.develop;
         var dest = path.join(module.name, buildType);
         var time = Date.now();
+
         console.log(module.name + ' build task begin');
         var stream = gulp.src(sources.concat(module.src))
             .pipe(plugins.jshint())
             .pipe(plugins.jshint.reporter('default'))
-            .pipe(gulpif(isPod, plugins.uglify()))
+            //只对最后发布的包（jiShiTracker）进行压缩
+            .pipe(gulpif(module.name === 'jishiTracker', plugins.uglify()))
             .pipe(plugins.concat(module.name + time + '.js'))
             .pipe(gulp.dest(dest))
             .pipe(notify({message: module.name + ' build task ok'}));
