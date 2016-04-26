@@ -1,10 +1,10 @@
 /**
  * Created by fang_ on 2016/4/24.
  */
-function TaskExecutor(modules, isDevelop, callback) {
+function TaskExecutor(modules, isPod, callback) {
     var that = this;
     that.modules = modules;
-    that.isDevelop = isDevelop;
+    that.isPod = isPod;
     that.callback = callback;
 
     that.execute = function () {
@@ -20,19 +20,17 @@ function TaskExecutor(modules, isDevelop, callback) {
                     if (hasExecuted.indexOf(tmpDepModules[j].name) != -1) {
                         break;
                     }
-                    console.log("begin callback: " + tmpDepModules[j].name);
-                    that.callback(tmpDepModules[j], that.isDevelop);
-                    console.log("end callback: " + tmpDepModules[j].name);
+                    console.log("begin : " + tmpDepModules[j].name);
+                    that.callback(tmpDepModules[j], that.isPod);
+                    console.log("end : " + tmpDepModules[j].name);
                     hasExecuted.push(tmpDepModules[j].name);
                 }
             }
-            console.log("begin callback: " + tmpModule.name);
-            that.callback(tmpModule, that.isDevelop);
-            console.log("end callback: " + tmpModule.name);
+            console.log("begin : " + tmpModule.name);
+            that.callback(tmpModule, that.isPod);
+            console.log("end : " + tmpModule.name);
             hasExecuted.push(tmpModule.name);
         }
     };
-
-
 };
 module.exports = TaskExecutor;
