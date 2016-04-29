@@ -21,37 +21,8 @@ gulp.task('help', function () {
     //console.log('	gulp 	-m <module>		模块打包(默认:all)')
 });
 
-gulp.task('default', ['build'], function () {
+gulp.task('default', ['test'], function () {
 
-
-});
-
-gulp.task('test', function (done) {
-    
-    var option = {
-        evr: argv.p || !argv.d
-    };
-    
-    var modules = generator.getAllModules();
-    if(null === modules || modules.length <=0 ){
-        return;
-    }    
-    var files = [];
-    var buildType = option.evr?'build/production':'build/develop';            
-    var dest = [];
-    for(var i=0; i<modules.length; i++){
-        var sources = [];
-        var tmpPath = path.join(modules[i].dest, buildType,  '*.js');
-        dest.push(tmpPath);
-        sources = sources.concat(modules[i].src, modules[i].test, dest);
-        files = files.concat(sources, files);
-    }
-
-    Server.start({
-        configFile: __dirname + '/karma.conf.js',
-        singleRun: true,
-        files: files
-    }, done);
 
 });
 
@@ -65,6 +36,37 @@ gulp.task('build', function (cb) {
     runSequence(list, cb);
 
 });
+
+
+gulp.task('test', function (done) {
+    
+    var option = {
+        evr: argv.p || !argv.d
+    };
+    
+    var modules = generator.getAllModules();
+    if(null === modules || modules.length <=0 ){
+        return;
+    }    
+    var files = [];
+    var buildType = option.evr?'build/production':'build/develop';            
+
+    for(var i=0; i<modules.length; i++){
+        var dest = [];
+        var sources = modules[i].src.concat(modules[i].test);
+        var tmpPath = path.join(modules[i].dest, buildType,  '*.js');
+        dest.push(tmpPath);
+        files = files.concat(sources, dest);
+    }
+
+    Server.start({
+        configFile: __dirname + '/karma.conf.js',
+        singleRun: true,
+        files: files
+    }, done);
+
+});
+
 
 //****************************************
 
