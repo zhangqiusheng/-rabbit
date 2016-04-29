@@ -17,7 +17,9 @@ function Settings() {
                 'CommonTracker/src/collectionUnit.js',
                 'CommonTracker/src/fieldManager.js',
                 'CommonTracker/src/sendingUnit.js'],
-            test: []
+            test: [
+                'CommonTracker/UnitTests/*.js'
+            ]
         },
         tvd: {
             src: ['TVDTracker/src/Const.js',
@@ -34,7 +36,9 @@ function Settings() {
                 'TVDTracker/src/PlayUnit.js',
                 'TVDTracker/src/SeparateLayer.js',
                 'TVDTracker/src/Tracker.js'],
-            test: []
+            test: [
+                'TVDTracker/UnitTests/*.js'
+            ]
         },
         jiShi: {
             src: ['JiShiTracker/src/StorageForJiTV.js',
@@ -45,6 +49,20 @@ function Settings() {
                 'JiShiTracker/src/EventManagerForJiTV.js',
                 'JiShiTracker/src/TrackerForJiTVD.js'],
             test: []
+        },
+        jiShiLive:{
+            src:['JiShiTracker/src/imgSendMethod.js',
+                'JiShiTracker/src/sendMethodForJiTVLive.js',
+                'JiShiTracker/src/DefaultConfig.js',
+                'JiShiTracker/src/StorageForJiTVLive.js',
+                'JiShiTracker/src/SystemInfoFieldsForJiTV.js',
+                'JiShiTracker/src/SampleRateForJiTV.js',
+                'JiShiTracker/src/ColumnHelper.js',
+                'JiShiTracker/src/PortalMSHelper.js',
+                'JiShiTracker/src/EventManagerForJiTV.js',
+                'JiShiTracker/src/TrackerForJiTVD.js'],
+            test:[]
+
         }
     };
     that.modules= {
@@ -67,6 +85,13 @@ function Settings() {
             test: that.source.jiShi.test,
             dest: 'jiShiTracker',
             name: 'jishiTracker',
+            dependencies: ['tvd']
+        },
+        jiShiLive: {
+            src: that.source.jiShiLive.src,
+            test: that.source.jiShiLive.test,
+            dest: 'JiShiLiveTracker',
+            name: 'JiShiLiveTracker',
             dependencies: ['tvd']
         }
     };

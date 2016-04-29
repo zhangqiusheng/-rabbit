@@ -13,6 +13,7 @@ var generator = new moduleGenerator(srcModules);
 var gulpif = require('gulp-if');
 var gulpLoadPlugins = require('gulp-load-plugins');
 var plugins = gulpLoadPlugins();
+var Server = require('karma').server;
 
 gulp.task('help', function () {
     console.log('	gulp 	build			文件打包');
@@ -37,7 +38,36 @@ gulp.task('build', function () {
 });
 
 gulp.task('test', function (done) {
-    executeTask('test', done);
+    // executeTask('test', done);
+        var option = {
+        evr: argv.p || !argv.d
+    };
+    var buildType = option.evr ? module.production : module.develop;
+
+    var modules = generator.getAllModules();
+    if(null === modules || modules.length <=0 ){
+        return;
+    }
+
+    var sources = [];
+    var files = [];
+    var dest = [];
+    for(var i=0; i<modules.length; i++){
+        
+        var tmpPath = path.join(modules[i].dest, buildType, modules[i].name + '*.js');
+        dest.push(tmpPath);
+        files = sources.concat(modules[i].src, modules[i].test, dest);
+    }
+
+    // var files = sources.concat(module.src, module.test);
+        // var currentPath = process.cwd();
+    Server.start({
+        configFile: __dirname + '/karma.conf.js',
+        singleRun: true,
+        files: files
+    }, done);
+
+
 });
 
 gulp.task('sample', function (cb) {
@@ -121,29 +151,39 @@ var gulpTasks = {
 
     gtest: function () {
 
-        var getDependencyModuleSrc = function getDependencyModuleSrc(module, isPod) {
-            var sources = [];
-            var moduleDeps = module.dependencies;
-            var buildType = isPod ? module.production : module.develop;
+        // var 
+        // var module = arguments[0], isPod = arguments[1];
+        // if(null === module || module.test.length <= 0){
+        //     return;
+        // }
 
-            if (null != moduleDeps && moduleDeps.length > 0) {
+        // var getDependencyModuleSrc = function getDependencyModuleSrc(module, isPod) {
+        //     var sources = [];
+        //     var moduleDeps = module.dependencies;
+        //     var buildType = isPod ? module.production : module.develop;
 
-                for (var i = 0; i < moduleDeps.length; i++) {
-                    var tmpPath = path.join(moduleDeps[i].dest, buildType, moduleDeps[i].name + '*.js');
-                    sources.push(tmpPath);
-                }
-            }
-            return sources;
-        };
-        var sources = getDependencyModuleSrc(module, isPod);
-        var files = sources.concat(module.src, module.test);
-        var currentPath = process.cwd();
-        Server.start({
-            configFile: currentPath + '/karma.conf.js',
-            singleRun: isPod,
-            files: files
-        }, done);
+        //     if (null != moduleDeps && moduleDeps.length > 0) {
 
+        //         for (var i = 0; i < moduleDeps.length; i++) {
+        //             var tmpPath = path.join(moduleDeps[i].dest, buildType, moduleDeps[i].name + '*.js');
+        //             sources.push(tmpPath);
+        //         }
+        //     }
+        //     return sources;
+        // }
+
+        // var done = function(){};
+        // var module = arguments[0], isPod = arguments[1];
+        // var sources = getDependencyModuleSrc(module, isPod);
+        
+
+        // var files = sources.concat(module.src, module.test);
+        // // var currentPath = process.cwd();
+        // Server.start({
+        //     configFile: __dirname + '/karma.conf.js',
+        //     singleRun: true,
+        //     files: files
+        // }, done);
     }
 
 }
@@ -161,32 +201,41 @@ var defaultTask = function (parts, options) {
             var des = module.dependencies;
 
             var cleanTaskName = module.name + '_clean';
+            var buildTaskName = module.name + '_build';
+            var testTaskName = module.name + '_test';
 
-            var desTasks = [];
+            var cleanDesTasks = [];
+            var buildDesTasks = [];
+            var testDesTasks = [];
             if (null != des && des.length > 0) {
                 for (var i = 0; i < des.length; i++) {
-                    var tmp = des[0].name + '_clean';
-                    desTasks.push(tmp)
+                    var tmpClean = des[0].name + '_clean';
+                    cleanDesTasks.push(tmpClean);
+
+                    var tmpBuild = des[0].name + '_build';
+                    buildDesTasks.push(tmpBuild);
+
+                    var tmpTest = des[0].name + '_test';
+                    testDesTasks.push(tmpTest);
                 }
             }
 
             /* clean */
-            gulp.task(cleanTaskName, desTasks, function () {
+            gulp.task(cleanTaskName, cleanDesTasks, function () {
                 return gulpTasks.gclean(module, options.evr);
             });
 
-            var buildTaskName = module.name + '_build';
-            var desTasks = [];
-            if (null != des && des.length > 0) {
-                for (var i = 0; i < des.length; i++) {
-                    var tmp = des[0].name + '_build';
-                    desTasks.push(tmp)
-                }
-            }
             /* build */
-            gulp.task(buildTaskName, desTasks, function () {
+            gulp.task(buildTaskName, buildDesTasks, function () {
                 return gulpTasks.gbuild(module, options.evr);
             });
+
+            /* test */
+
+            gulp.task(testTaskName,testDesTasks,function(){
+
+                return gulpTasks.gtest(module, options.evr);
+            })
 
             /* 模块任务 */
             var moduleTask = module.name + 'Task';
