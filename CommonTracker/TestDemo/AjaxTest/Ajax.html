@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="ajax.js"></script>
+	<script>
+		var ajax = window.ajaxRequest;
+		ajax.ajq('ajax.php',{a:'aaa',b:'bbb'},
+				function(){
+			 		console.log(window._gridsum_ajax_callbackvar);
+				}
+			);
+	</script>
+</head>
+<style>
+	
+</style>
+<body>
+	
+</body>
+<script>
+
+</script>
+</html>

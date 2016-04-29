@@ -4,12 +4,9 @@ var gulp = require('gulp'),
     setting = require('./settings.js'),
     notify = require('gulp-notify'),//提示信息
     clean = require('gulp-clean'),//清理文件
-    runSequence = require('run-sequence'),
-    autoTasks = require('./buildSrc/src/AutoTasks');
+    runSequence = require('run-sequence');
 var moduleGenerator = require('./buildSrc/src/ModuleGenerator.js');
-var taskExecutor = require('./buildSrc/src/TaskExceutor.js');
-var srcModules = setting.modules;
-var generator = new moduleGenerator(srcModules);
+var generator = new moduleGenerator(setting.modules);
 var gulpif = require('gulp-if');
 var gulpLoadPlugins = require('gulp-load-plugins');
 var plugins = gulpLoadPlugins();
@@ -24,53 +21,41 @@ gulp.task('help', function () {
     //console.log('	gulp 	-m <module>		模块打包(默认:all)')
 });
 
-gulp.task('default', ['sample'], function () {
+gulp.task('default', ['build'], function () {
 
 
-});
-
-gulp.task('clean', function () {
-    executeTask('clean');
-});
-
-gulp.task('build', function () {
-    executeTask('build');
 });
 
 gulp.task('test', function (done) {
-    // executeTask('test', done);
-        var option = {
+    
+    var option = {
         evr: argv.p || !argv.d
     };
-    var buildType = option.evr ? module.production : module.develop;
-
+    
     var modules = generator.getAllModules();
     if(null === modules || modules.length <=0 ){
         return;
-    }
-
-    var sources = [];
+    }    
     var files = [];
+    var buildType = option.evr?'build/production':'build/develop';            
     var dest = [];
     for(var i=0; i<modules.length; i++){
-        
-        var tmpPath = path.join(modules[i].dest, buildType, modules[i].name + '*.js');
+        var sources = [];
+        var tmpPath = path.join(modules[i].dest, buildType,  '*.js');
         dest.push(tmpPath);
-        files = sources.concat(modules[i].src, modules[i].test, dest);
+        sources = sources.concat(modules[i].src, modules[i].test, dest);
+        files = files.concat(sources, files);
     }
 
-    // var files = sources.concat(module.src, module.test);
-        // var currentPath = process.cwd();
     Server.start({
         configFile: __dirname + '/karma.conf.js',
         singleRun: true,
         files: files
     }, done);
 
-
 });
 
-gulp.task('sample', function (cb) {
+gulp.task('build', function (cb) {
 
     var option = {
         evr: argv.p || !argv.d
@@ -80,22 +65,6 @@ gulp.task('sample', function (cb) {
     runSequence(list, cb);
 
 });
-
-function executeTask(key, done) {
-    var option = {
-        evr: argv.p || !argv.d
-    };
-    var modules = generator.getAllModules();
-    var autoTask = new autoTasks();
-    var callback = autoTask[key];
-    if (key === 'test') {
-        var executor = new taskExecutor(modules, option.evr, callback(module, option.evr, done));
-    } else {
-        var executor = new taskExecutor(modules, option.evr, callback(module, option.evr));
-    }
-
-    executor.execute();
-}
 
 //****************************************
 
@@ -147,45 +116,7 @@ var gulpTasks = {
             .pipe(notify({message: module.name + ' build task ok'}));
         console.log(module.name + ' build task ok')
         return stream;
-    },
-
-    gtest: function () {
-
-        // var 
-        // var module = arguments[0], isPod = arguments[1];
-        // if(null === module || module.test.length <= 0){
-        //     return;
-        // }
-
-        // var getDependencyModuleSrc = function getDependencyModuleSrc(module, isPod) {
-        //     var sources = [];
-        //     var moduleDeps = module.dependencies;
-        //     var buildType = isPod ? module.production : module.develop;
-
-        //     if (null != moduleDeps && moduleDeps.length > 0) {
-
-        //         for (var i = 0; i < moduleDeps.length; i++) {
-        //             var tmpPath = path.join(moduleDeps[i].dest, buildType, moduleDeps[i].name + '*.js');
-        //             sources.push(tmpPath);
-        //         }
-        //     }
-        //     return sources;
-        // }
-
-        // var done = function(){};
-        // var module = arguments[0], isPod = arguments[1];
-        // var sources = getDependencyModuleSrc(module, isPod);
-        
-
-        // var files = sources.concat(module.src, module.test);
-        // // var currentPath = process.cwd();
-        // Server.start({
-        //     configFile: __dirname + '/karma.conf.js',
-        //     singleRun: true,
-        //     files: files
-        // }, done);
     }
-
 }
 
 var defaultTask = function (parts, options) {
@@ -229,13 +160,6 @@ var defaultTask = function (parts, options) {
             gulp.task(buildTaskName, buildDesTasks, function () {
                 return gulpTasks.gbuild(module, options.evr);
             });
-
-            /* test */
-
-            gulp.task(testTaskName,testDesTasks,function(){
-
-                return gulpTasks.gtest(module, options.evr);
-            })
 
             /* 模块任务 */
             var moduleTask = module.name + 'Task';

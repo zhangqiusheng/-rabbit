@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="../../Build/jitv_tracker_release.js"></script>
+    <script type="text/javascript" src="./prepare/prepare.js"></script>
+    <script type="text/javascript">
+        var gs_tracker = window.GridsumTracker.getTracker('12345','1.0.0','prepare/');;
+
+        function Enter1(){
+            gs_tracker.epgEnter('title1','c1-c2-c3','e1-e2');
+        }
+        function Exit(){
+            gs_tracker.epgExit();
+        }
+    </script>
+</head>
+<body>
+<input type="button" value="Enter1" onclick="Enter1()">
+<input type="button" value="epgExit" onclick="Exit()">
+</body>
+</html>

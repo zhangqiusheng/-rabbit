@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="../../Build/jitv_tracker_release.js"></script>
+    <script type="text/javascript" src="./prepare/prepare.js"></script>
+    <script type="text/javascript">
+        var gs_tracker = window.GridsumTracker.getTracker('12345','1.0.0','prepare/');
+        function Enter1(){
+            gs_tracker.epgEnter('title1','c1-c2-c3','e1-e2');
+        }
+        function Exit(){
+            gs_tracker.epgExit();
+        }
+        console.log(document.cookie);//测试会话是否写入cookie
+        var videoInfo={
+            channelName:"channel1",  //频道名称（ch）。仅直播、回看、时移发送，点播不发送
+            column:"colum1-colum2-colum3", //栏目信息（chx）。仅点播发送，直播、回看、时移不发送
+            programe:"programe1",    //节目名称（prg）仅点播发送
+            catid:"12345",     //栏目ID（catid）。仅点播、时移发送，直播、回看不发送
+            programeType:"programeType",  //节目类型（pt）。仅点播发送，直播、回看、时移不发送。例如电视剧，电影，减肥等
+            videoLabel:"1~2~3~4~5",  //标签（lab）
+            videoID:"vID",   //频道ID（chid）
+            medid:"123",   //节目ID（medid）
+            vedioDuration:10000,  //视频时长（d）。单位是秒。仅对点播、回看发送，直播、时移不发送
+            extendProperty1:"1",  //扩展字段1
+            extendProperty2:"2",  //扩展字段2
+        };
+        videoInfo={
+            channelName:"",  //频道名称（ch）。仅直播、回看、时移发送，点播不发送
+            programe:"",    //节目名称（prg）。仅点播发送，直播、回看、时移不发送
+            programeType:"",  //节目类型（pt）。仅点播发送，直播、回看、时移不发送。例如电视剧，电影，减肥等
+            catid:'catid',     //栏目ID（catid）。仅点播、时移发送，直播、回看不发送
+            videoLabel:"",  //标签（lab）
+            videoID:"",   //频道ID（chid）
+            medid:'medid',   //节目ID（medid）
+            vedioDuration:'80',  //视频时长（d）。单位是秒。仅对点播、回看发送，直播、时移不发送
+            extendProperty1:"",  //扩展字段1
+            extendProperty2:"",  //扩展字段2
+        };
+        var infoProvider = {
+            getPosition:function(){ return 1;}
+        }
+        function Play(){
+            this.vodP = gs_tracker.createVodPlay(videoInfo,infoProvider);
+            this.liveP = gs_tracker.createLivePlay(videoInfo,infoProvider);
+            this.reviewP = gs_tracker.createReviewPlay(videoInfo,infoProvider);
+            this.shiftP = gs_tracker.createShiftPlay(videoInfo,infoProvider);
+        }
+        var play = new Play();
+    </script>
+</head>
+<body>
+    <div id="vodP">
+        <span>vodPlay: </span>
+        <input type="button" value="play" >
+        <input type="button" value="pause">
+        <input type="button" value="seek">
+        <input type="button" value="buffer">
+        <input type="button" value="endPlay">
+    </div>
+    <div id="liveP">
+        <span>livePlay: </span>
+        <input type="button" value="play" >
+        <input type="button" value="pause">
+        <input type="button" value="seek">
+        <input type="button" value="buffer">
+        <input type="button" value="endPlay">
+    </div>
+    <div id="reviewP">
+        <span>reviewPlay: </span>
+        <input type="button" value="play" >
+        <input type="button" value="pause">
+        <input type="button" value="seek">
+        <input type="button" value="buffer">
+        <input type="button" value="endPlay">
+    </div>
+    <div id="shiftP">
+        <span>shiftPlay: </span>
+        <input type="button" value="play" >
+        <input type="button" value="pause">
+        <input type="button" value="seek">
+        <input type="button" value="buffer">
+        <input type="button" value="endPlay">
+    </div>
+    <div>
+        <input type="button" value="epgEnter1" onclick="Enter1()">
+        <input type="button" value="epgExit" onclick="Exit()">
+    </div>
+</body>
+<script>
+var body = document.body;
+if(body.addEventListener){
+    body.addEventListener('click',function(e){run(e);},true);
+}else if(body.attachEvent){
+    body.attachEvent('onclick',function(e){run(e);});
+}
+
+function run(e){
+    var event = e || window.event,
+        src = e.target || e.srcElement;
+        opt = src.value,
+        type = src.parentNode.id;
+    if(!opt) return;
+    if(opt.indexOf('epg') >= 0){
+        return ;
+    }
+    play[type][opt]();
+}
+</script>
+</html>

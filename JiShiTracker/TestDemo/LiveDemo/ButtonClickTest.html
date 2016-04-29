@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="../../Build/jitv_live_tracker_release.js"></script>
+    <script type="text/javascript" src="./prepare/prepare.js"></script>
+    <script type="text/javascript">
+        var gs_tracker = window.GridsumTracker.getTracker('12345','1.0.0','http://localhost/');
+
+        function click1(){
+        	gs_tracker.click('content1',1,'{id:123,position:{x:1,y:1,w:1,h:1},page:{pageindex:1,elementindex:5},keynum:1}','http://test.com','e1-e2');
+        }
+
+        function clickPoster(){
+            gs_tracker.clickPoster('content1','{id:123,position:{x:1,y:1,w:1,h:1},page:{pageindex:1,elementindex:5}keynum:1}','http://test.com');
+        }
+
+    </script>
+</head>
+<body>
+<input type="button" value="Click" onclick="click1()">
+<input type="button" value="clickPoster" onclick="clickPoster()">
+</body>
+</html>

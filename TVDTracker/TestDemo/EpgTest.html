@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="../Build/tvd_tracker_debug.js"></script>
+    <script type="text/javascript" src="./prepare/prepare.js"></script>
+    <script type="text/javascript">
+        var gs_tracker = window.GridsumTracker.getTracker('12345','1.0.0','http://localhost/');
+
+		function Enter(){
+			gs_tracker.epgEnter('title','c1-c2-c3','e1-e2');
+		}       
+        function Exit(){
+        	gs_tracker.epgExit();
+        }
+
+    </script>
+</head>
+<body>
+<input type="button" value="epgEnter" onclick="Enter()">
+<input type="button" value="epgExit" onclick="Exit()">
+</body>
+</html>
