@@ -33,7 +33,7 @@ gulp.task('build', function (cb) {
     };
     var modules = generator.getAllModules();
     var executor = new TaskExecutor(modules,option);
-    var list =  executor.executor();
+    var list =  executor.execute();
     runSequence(list, cb);
 
 });
@@ -74,7 +74,7 @@ gulp.task('test', function (done) {
 function GulpTasks(){
 
     var _getDesModuleSrc = function(module, isPod) {
-        
+
         var sources = [];
         var moduleDeps = module.dependencies;
         var buildType = isPod ? module.production : module.develop;
@@ -133,7 +133,7 @@ function GulpTasks(){
 
 function TaskExecutor(parts, options) {
   
-    var _executor = function(){
+    var _execute = function(){
         var gulpTasks = new GulpTasks();
         var list = [];
 
@@ -188,10 +188,11 @@ function TaskExecutor(parts, options) {
 
             list.push(parts[i].name + 'Task');
         }
+
         return list;
     };
 
     return{
-        executor: _executor,
+        execute: _execute,
     }
 }
