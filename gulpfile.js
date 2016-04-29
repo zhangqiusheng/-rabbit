@@ -32,7 +32,8 @@ gulp.task('build', function (cb) {
         evr: argv.p || !argv.d
     };
     var modules = generator.getAllModules();
-    var list = defaultTask(modules, option);
+    var executor = new TaskExecutor(modules,option);
+    var list =  executor.executor();
     runSequence(list, cb);
 
 });
@@ -70,11 +71,25 @@ gulp.task('test', function (done) {
 
 //****************************************
 
-var gulpTasks = {
+function GulpTasks(){
 
-    gclean: function () {
+    var _getDesModuleSrc = function(module, isPod) {
+        
+        var sources = [];
+        var moduleDeps = module.dependencies;
+        var buildType = isPod ? module.production : module.develop;
 
-        var module = arguments[0], isPod = arguments[1];
+        if (null != moduleDeps && moduleDeps.length > 0) {
+
+            for (var i = 0; i < moduleDeps.length; i++) {
+                var tmpPath = path.join(moduleDeps[i].dest, buildType, moduleDeps[i].name + '*.js');
+                sources.push(tmpPath);
+            }
+        }
+        return sources;
+    };
+
+    var _gclean = function (module,isPod) {
         var buildType = isPod ? module.production : module.develop;
         var cleanPath = path.join(module.name, buildType);
         console.log(module.name + ' clean task begin');
@@ -84,25 +99,12 @@ var gulpTasks = {
         console.log(module.name + ' clean task ok')
         return stream;
 
-    },
+    };
 
-    gbuild: function () {
-        var getDependencyModuleSrc = function getDependencyModuleSrc(module, isPod) {
-            var sources = [];
-            var moduleDeps = module.dependencies;
-            var buildType = isPod ? module.production : module.develop;
-
-            if (null != moduleDeps && moduleDeps.length > 0) {
-
-                for (var i = 0; i < moduleDeps.length; i++) {
-                    var tmpPath = path.join(moduleDeps[i].dest, buildType, moduleDeps[i].name + '*.js');
-                    sources.push(tmpPath);
-                }
-            }
-            return sources;
-        };
+    var _gbuild = function () {
+        
         var module = arguments[0], isPod = arguments[1];
-        var sources = getDependencyModuleSrc(module, isPod);
+        var sources = _getDesModuleSrc(module, isPod);
         var buildType = isPod ? module.production : module.develop;
         var dest = path.join(module.name, buildType);
         var time = Date.now();
@@ -118,63 +120,78 @@ var gulpTasks = {
             .pipe(notify({message: module.name + ' build task ok'}));
         console.log(module.name + ' build task ok')
         return stream;
+    };
+
+    return {
+
+        gclean: _gclean,
+
+        gbuild:_gbuild,
+
     }
 }
 
-var defaultTask = function (parts, options) {
+function TaskExecutor(parts, options) {
+  
+    var _executor = function(){
+        var gulpTasks = new GulpTasks();
+        var list = [];
 
-    var list = [];
+        for (var i = 0; i < parts.length; i++) {
 
-    for (var i = 0; i < parts.length; i++) {
+            (function (key) {
 
-        (function (key) {
+                var module = key;
 
-            var module = key;
+                var des = module.dependencies;
 
-            var des = module.dependencies;
+                var cleanTaskName = module.name + '_clean';
+                var buildTaskName = module.name + '_build';
+                var testTaskName = module.name + '_test';
 
-            var cleanTaskName = module.name + '_clean';
-            var buildTaskName = module.name + '_build';
-            var testTaskName = module.name + '_test';
+                var cleanDesTasks = [];
+                var buildDesTasks = [];
+                var testDesTasks = [];
+                if (null != des && des.length > 0) {
+                    for (var i = 0; i < des.length; i++) {
+                        var tmpClean = des[0].name + '_clean';
+                        cleanDesTasks.push(tmpClean);
 
-            var cleanDesTasks = [];
-            var buildDesTasks = [];
-            var testDesTasks = [];
-            if (null != des && des.length > 0) {
-                for (var i = 0; i < des.length; i++) {
-                    var tmpClean = des[0].name + '_clean';
-                    cleanDesTasks.push(tmpClean);
+                        var tmpBuild = des[0].name + '_build';
+                        buildDesTasks.push(tmpBuild);
 
-                    var tmpBuild = des[0].name + '_build';
-                    buildDesTasks.push(tmpBuild);
-
-                    var tmpTest = des[0].name + '_test';
-                    testDesTasks.push(tmpTest);
+                        var tmpTest = des[0].name + '_test';
+                        testDesTasks.push(tmpTest);
+                    }
                 }
-            }
 
-            /* clean */
-            gulp.task(cleanTaskName, cleanDesTasks, function () {
-                return gulpTasks.gclean(module, options.evr);
-            });
+                /* clean */
+                gulp.task(cleanTaskName, cleanDesTasks, function () {
+                    return gulpTasks.gclean(module, options.evr);
+                });
 
-            /* build */
-            gulp.task(buildTaskName, buildDesTasks, function () {
-                return gulpTasks.gbuild(module, options.evr);
-            });
+                /* build */
+                gulp.task(buildTaskName, buildDesTasks, function () {
+                    return gulpTasks.gbuild(module, options.evr);
+                });
 
-            /* 模块任务 */
-            var moduleTask = module.name + 'Task';
-            gulp.task(moduleTask, function (cb) {
-                runSequence(
-                    [cleanTaskName, buildTaskName],
-                    cb
-                );
-            });
+                /* 模块任务 */
+                var moduleTask = module.name + 'Task';
+                gulp.task(moduleTask, function (cb) {
+                    runSequence(
+                        [cleanTaskName, buildTaskName],
+                        cb
+                    );
+                });
 
-        })(parts[i]);
+            })(parts[i]);
 
-        list.push(parts[i].name + 'Task');
+            list.push(parts[i].name + 'Task');
+        }
+        return list;
+    };
+
+    return{
+        executor: _executor,
     }
-    return list;
 }
