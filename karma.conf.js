@@ -9,7 +9,7 @@ module.exports = function(config) {
     //preprocessors: { '*.js': ['coverage'] },
     reporters: ['progress', 'coverage'],
     singleRun: true,
-    //reporters: ['teamcity','coverage'],
+    // reporters: [],
     //reporters: ['dots', 'junit','coverage'],
         //junitReporter: {
             // outputFile: 'test-results.xml'
